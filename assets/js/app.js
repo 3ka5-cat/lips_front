@@ -82,10 +82,14 @@ function loadCompany(company_id) {
             })
             .fail(function (jqxhr, textStatus, error) {
                 if (typeof jqxhr.responseJSON !== 'undefined') {
-                    var error_txt = ERR_MSG +
-                        '<br>Code: ' + jqxhr.responseJSON.code +
-                        ' Message: ' + jqxhr.responseJSON.message;
-                    $('#error_msg').html(error_txt).show();
+                    if (jqxhr.responseJSON.code == 401) {
+                        window.location.hash = '#';
+                    } else {
+                        var error_txt = ERR_MSG +
+                            '<br>Code: ' + jqxhr.responseJSON.code +
+                            ' Message: ' + jqxhr.responseJSON.message;
+                        $('#error_msg').html(error_txt).show();
+                    }
                 }
                 else
                     $('#error_msg').text(ERR_MSG).show();
@@ -163,10 +167,14 @@ function loadLeads() {
         })
         .fail(function (jqxhr, textStatus, error) {
             if (typeof jqxhr.responseJSON !== 'undefined') {
-                var error_txt = ERR_MSG +
-                    '<br>Code: ' + jqxhr.responseJSON.code +
-                    ' Message: ' + jqxhr.responseJSON.message;
-                $('#error_msg').html(error_txt).show();
+                if (jqxhr.responseJSON.code == 401) {
+                    window.location.hash = '#';
+                } else {
+                    var error_txt = ERR_MSG +
+                        '<br>Code: ' + jqxhr.responseJSON.code +
+                        ' Message: ' + jqxhr.responseJSON.message;
+                    $('#error_msg').html(error_txt).show();
+                }
             }
             else
                 $('#error_msg').text(ERR_MSG).show();
@@ -193,20 +201,27 @@ function login() {
                 Cookies.set('jwt', response.data);
             else
                 Cookies.set('jwt', response.data, {secure: true});
+            $('#auth_error_msg').text('').hide();
             window.location.hash = 'leads';
         }
         else {
-            $('#error_msg').text(ERR_MSG).show();
+            $('#auth_error_msg').text(ERR_MSG).show();
         }
     }).fail(function (jqxhr, textStatus, error) {
         if (typeof jqxhr.responseJSON !== 'undefined') {
-            var error_txt = ERR_MSG +
-                '<br>Code: ' + jqxhr.responseJSON.code +
-                ' Message: ' + jqxhr.responseJSON.message;
-            $('#error_msg').html(error_txt).show();
+            var error_txt;
+            if (jqxhr.responseJSON.code == 401 &&
+                jqxhr.responseJSON.message == 'Unable to authenticate User')
+                error_txt = 'Неверный логин или пароль';
+            else {
+                error_txt = ERR_MSG +
+                    '<br>Code: ' + jqxhr.responseJSON.code +
+                    ' Message: ' + jqxhr.responseJSON.message;
+            }
+            $('#auth_error_msg').html(error_txt).show();
         }
         else
-            $('#error_msg').text(ERR_MSG).show();
+            $('#auth_error_msg').text(ERR_MSG).show();
     });
 }
 
