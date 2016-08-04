@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>TopSeller лиды</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    <link rel="icon" href="assets/images/favicon/favicon.ico">
+
+    <link rel="stylesheet" href="assets/css/plugins/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/icons/icons.min.css">
+    <link rel="stylesheet" href="assets/css/plugins/plugins.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <!-- RESPONSIVE FIXES -->
+    <link rel="stylesheet" href="assets/css/responsive.css">
+    <link rel="stylesheet" href="assets/css/colors/midnight-blue.css" title="midnight-blue">
+    <!--[if lt IE 9]>
+            <script src="assets/js/plugins/html5shiv.min.js"></script>
+            <script src="assets/js/plugins/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+</head>
+
+<body>
+
+<div class="main-wrapper">
+    <div class="preloader">
+        <div class="loader-container">
+            <div class="text-logo">TopSeller</div>
+            <div class="signal"></div>
+        </div>
+    </div>
+    <header id="top" >
+            <div class="overlay" style="height: 50px; background: rgba(44, 62, 80, 1);">
+                <nav class="navbar" role="navigation">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- Navbar-Header -->
+                                <div class="navbar-header">
+                                    <!-- Mobile Menu -->
+                                    <!-- Text-Logo -->
+                                    <a href="#" class="navbar-brand scrollto" title="TopSeller">
+                                        <span class="text-logo">TopSeller</span>
+                                    </a>
+                                </div><!-- /End Navbar-Header -->
+                                <!-- Navbar-Collapse -->
+                                <div class="navbar-collapse collapse">
+                                    <ul class="nav navbar-nav navbar-right">
+                                        <!-- Menu Items -->
+                                        <li><a href="#leads" title="" id="leads_link">Лиды</a></li>
+                                        <li><a href="#logout" title="" id="logout">Выход</a></li>
+                                    </ul>
+                                </div><!-- /End Navbar-Collapse -->
+                            </div><!-- /End Col -->
+                        </div><!-- /End Row -->
+                    </div><!-- /End Container -->
+                </nav><!-- /End Sticky Navigation -->
+            </div><!-- /End Background Overlay -->
+        </header>
+
+    <div class="container">
+        <div id="error_msg" style="display:none; text-align: center;"></div>
+
+        <div class="wrapper-xs error page text-center">
+            <h1>Что-то пошло не так...</h1>
+            Вы не должны были здесь оказаться, но, раз так получилось,
+            <br>
+            <a href="mailto:team@topseller.market?Subject=Проблема с сайтом">свяжитесь с администратором</a>, мы все починим!
+            <br>А пока он разбирается <a href="#">попробуйте вернуться к истокам</a>
+        </div>
+
+        <div class="wrapper-lg login page">
+            <form class="container-form col-md-6 col-md-offset-3"  id="loginForm">
+                <div class="form-group">
+                    <input type="text" name="username" id="username" class="form-control input-lg text-center" placeholder="Логин" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" name="pass" id="pass" class="form-control input-lg text-center" placeholder="Пароль" required>
+                </div>
+                <div class="text-center">
+                    <button class="btn btn-color" style="margin-right: 0">Войти</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="wrapper-xs leads page">
+            <table id="leads" class="display compact" cellspacing="0" width="100%">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="wrapper-xs company page" id="company">
+            <div id="name" style="display: inline"></div>
+            <div id="area" style="display: inline"></div>
+            <div id="site_url"></div>
+            <div class="wrapper-xs" id="description"></div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="assets/js/plugins/bootstrap.min.js"></script>
+<script src="assets/js/plugins/jquery.easing.1.3.min.js"></script>
+<script src="assets/js/plugins/modernizr.custom.min.js"></script>
+<script src="assets/js/plugins/plugins.min.js"></script>
+<script src="assets/js/plugins/js.cookie.js"></script>
+<script src="assets/js/custom.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="https://use.fontawesome.com/3533959ff2.js"></script>
+</body>
+</html>
