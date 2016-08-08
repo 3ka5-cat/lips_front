@@ -228,7 +228,7 @@ $("#signup-divider").submit(function(e) {
     if ( isValidEmail(data['email']) && (data['name'].length > 1)) {
         $.ajax({
             type: "POST",
-            url: "http://api.topseller.market/lead",
+            url: "https://api.topseller.market/lead",
             data: JSON.stringify(data),
             contentType : 'application/json',
             success: function() {
@@ -254,7 +254,7 @@ $("#fast-signup").submit(function(e) {
     if ( isValidEmail(data['email']) && (data['name'].length > 1)) {
         $.ajax({
             type: "POST",
-            url: "http://api.topseller.market/lead",
+            url: "https://api.topseller.market/lead",
             data: JSON.stringify(data),
             contentType : 'application/json',
             success: function() {
