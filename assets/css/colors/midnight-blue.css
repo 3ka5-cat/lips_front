@@ -148,7 +148,14 @@ a, .text-color {
     color: #09be43;
 }
 
+#ok_msg {
+    text-align: center;
+    background-color: #09be43;
+    color: #fff;
+}
 
-
-
-
+#error_msg {
+    text-align: center;
+    background-color: #c0392b;
+    color: #fff;
+}

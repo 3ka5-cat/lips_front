@@ -19,7 +19,7 @@ function renderLoginPage() {
 }
 
 function renderLeadsPage() {
-    loadLeads();
+    loadLeadList();
     $('.leads').show();
 }
 
@@ -60,6 +60,14 @@ function route(url) {
 }
 
 function loadCompany(company_id) {
+    function cleanUp() {
+        $('#name').text('');
+        $('#area').text('');
+        $('#industry').text('');
+        $('#site_url').text('');
+        $('#industry_list').text('');
+        $('#description').text('');
+    }
     $.ajaxSetup({
         headers : {
             'Authorization': Cookies.get('jwt')
@@ -68,15 +76,28 @@ function loadCompany(company_id) {
     $.getJSON(API_DOMAIN.concat('company/').concat(company_id))
             .done(function(response) {
                 if (response.status === 'success') {
-                    $('#name').text(response.data.name);
-                    $('#area').text('(' + response.data.area + ')');
-                    $('<a>', {
-                        href: response.data.site_url,
-                        text: response.data.site_url
-                    }).appendTo('#site_url');
-                    $('#description').html(response.data.description);
+                        cleanUp();
+                        $('#name').text(response.data.company_name || 'Название компании не указано');
+                        $('#area').text(response.data.company_area || 'Месторасположение не указано');
+                        $('#industry').text(response.data.company_industry || 'Сфера деятельности не указана');
+                        if (response.data.company_site_url) {
+                            $('#site_url').html(
+                                $('<a>', {
+                                    href: response.data.company_site_url,
+                                    text: response.data.company_site_url
+                                }));
+                        }
+                        else
+                            $('#site_url').text('Сайт не указан');
+                        $('#description').html(response.data.company_description || 'Описание отсутствует');
+                        var industry_list = $('<ul>');
+                        $.each(response.data.vacancy_specializations, function(i, item) {
+                            industry_list.append($('<li>', {text: item}))
+                        });
+                        $('#industry_list').html(industry_list || 'Список потенциальных сфер деятельности пуст');
                 }
                 else {
+                    cleanUp();
                     $('#error_msg').text(ERR_MSG).show();
                 }
             })
@@ -85,18 +106,21 @@ function loadCompany(company_id) {
                     if (jqxhr.responseJSON.code == 401) {
                         window.location.hash = '#';
                     } else {
+                        cleanUp();
                         var error_txt = ERR_MSG +
                             '<br>Code: ' + jqxhr.responseJSON.code +
                             ' Message: ' + jqxhr.responseJSON.message;
                         $('#error_msg').html(error_txt).show();
                     }
                 }
-                else
+                else {
+                    cleanUp();
                     $('#error_msg').text(ERR_MSG).show();
+                }
             });
 }
 
-function loadLeads() {
+function loadLeadList() {
     $.ajaxSetup({
         headers : {
             'Authorization': Cookies.get('jwt')
@@ -230,9 +254,44 @@ function logout() {
     window.location.hash = '#';
 }
 
+function updateCompany() {
+    var data = {
+        industry: $('#new_industry').val()
+    };
+    var url = decodeURI(window.location.hash);
+    var id = url.split('#company/')[1].trim();
+    $.ajax({
+        type: 'POST',
+        url: API_DOMAIN.concat('company/').concat(id),
+        data: JSON.stringify(data),
+        dataType : 'json',
+        contentType : 'application/json'
+    }).done(function(response) {
+        if (response.status === 'success') {
+            $('#ok_msg').text('Изменения сохранены').show();
+            $('#companyForm').hide();
+            $('#saveCompany').hide();
+        }
+        else {
+            $('#error_msg').text(ERR_MSG).show();
+        }
+    }).fail(function (jqxhr, textStatus, error) {
+        if (typeof jqxhr.responseJSON !== 'undefined') {
+            var error_txt = ERR_MSG +
+                    '<br>Code: ' + jqxhr.responseJSON.code +
+                    ' Message: ' + jqxhr.responseJSON.message;
+            $('#error_msg').html(error_txt).show();
+        }
+        else
+            $('#error_msg').text(ERR_MSG).show();
+    });
+
+}
+
 $(document).ready(function() {
     $(window).on('hashchange', function() {
         $('#error_msg').text('').hide();
+        $('#ok_msg').text('').hide();
         $('.container .page').hide();
         $('#leads_link').hide();
         if (!isLoggedIn())
@@ -245,6 +304,17 @@ $(document).ready(function() {
     $('#loginForm').submit(function (e) {
         e.preventDefault();
         return login();
+    });
+
+    $('#saveCompany').click(function (e) {
+        e.preventDefault();
+        return updateCompany();
+    });
+
+    $('#editCompany').click(function (e) {
+        e.preventDefault();
+        $('#companyForm').toggle();
+        $('#saveCompany').toggle();
     });
 
     $(window).trigger('hashchange');

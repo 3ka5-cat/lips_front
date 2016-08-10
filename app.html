@@ -60,7 +60,8 @@
         </header>
 
     <div class="container">
-        <div id="error_msg" style="display:none; text-align: center;"></div>
+        <div id="error_msg" style="display:none;"></div>
+        <div id="ok_msg" style="display:none;"></div>
 
         <div class="wrapper-xs error page text-center">
             <h1>Что-то пошло не так...</h1>
@@ -97,16 +98,37 @@
         </div>
 
         <div class="wrapper-xs company page" id="company">
-            <div id="name" style="display: inline"></div>
-            <div id="area" style="display: inline"></div>
-            <div id="site_url"></div>
-            <div class="wrapper-xs" id="description"></div>
+                <div class="row">
+                    <div class="col-md-1">
+                        <i id="editCompany" class="fa fa-pencil"></i>
+                        <i id="saveCompany" class="fa fa-save" style="display: none"></i>
+                    </div>
+                    <form id="companyForm" class="col-md-11" style="display: none">
+                            <div class="form-group-sm">
+                                <input type="text" name="new_industry" id="new_industry" class="form-control"
+                                       placeholder="Новая сфера деятельности" required>
+                            </div>
+                    </form>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="name"></div>
+                        <div id="area"></div>
+                        <div id="industry"></div>
+                        <div id="site_url"></div>
+                        <div id="leads_list"></div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="industry_list"></div>
+                    </div>
+                </div>
+                <div id="description" class="row"></div>
         </div>
 
     </div>
 </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="assets/js/plugins/bootstrap.min.js"></script>
 <script src="assets/js/plugins/jquery.easing.1.3.min.js"></script>
@@ -115,6 +137,6 @@
 <script src="assets/js/plugins/js.cookie.js"></script>
 <script src="assets/js/custom.js"></script>
 <script src="assets/js/app.js"></script>
-<script src="https://use.fontawesome.com/3533959ff2.js"></script>
+<script src="//use.fontawesome.com/3533959ff2.js"></script>
 </body>
 </html>
