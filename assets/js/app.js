@@ -95,7 +95,8 @@ function loadCompany(company_id) {
                             $('#site_url').html(
                                 $('<a>', {
                                     href: response.data.company_site_url,
-                                    text: response.data.company_site_url
+                                    text: response.data.company_site_url,
+                                    target: "_blank"
                                 }));
                         }
                         else
