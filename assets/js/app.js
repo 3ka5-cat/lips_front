@@ -23,6 +23,12 @@ function renderLeadsPage() {
     $('.leads').show();
 }
 
+function renderLeadPage(id) {
+    loadLead(id);
+    $('#leads_link').show();
+    $('.lead').show();
+}
+
 function renderCompanyPage(id) {
     loadCompany(id);
     $('#leads_link').show();
@@ -44,10 +50,14 @@ function route(url) {
             logout();
         },
         '#leads': function() {
-            renderLeadsPage();
+            var id = url.split('#leads/')[1];
+            if (typeof(id) != 'undefined')
+                renderLeadPage(id.trim());
+            else
+                renderLeadsPage();
         },
-        '#company': function() {
-            var id = url.split('#company/')[1].trim();
+        '#companies': function() {
+            var id = url.split('#companies/')[1].trim();
             renderCompanyPage(id);
         }
     };
@@ -66,6 +76,7 @@ function loadCompany(company_id) {
         $('#industry').text('');
         $('#site_url').text('');
         $('#industry_list').text('');
+        $('#leads_list').text('');
         $('#description').text('');
     }
     $.ajaxSetup({
@@ -95,6 +106,16 @@ function loadCompany(company_id) {
                             industry_list.append($('<li>', {text: item}))
                         });
                         $('#industry_list').html(industry_list || 'Список потенциальных сфер деятельности пуст');
+                        var lead_list = $('<ul>');
+                        $.each(response.data.leads, function(i, item) {
+                            var e = $('<li>');
+                            $('<a>', {
+                                    href: '#leads/' + item[0],
+                                    html: '<i class="fa fa-envelope-o"></i> ' + (item[1] || 'Имя не указано')
+                                }).appendTo(e);
+                            lead_list.append(e);
+                        });
+                        $('#leads_list').html(lead_list || 'Список лидов пуст');
                 }
                 else {
                     cleanUp();
@@ -148,19 +169,23 @@ function loadLeadList() {
                                     return new Date(date).toDateString();
                                 }
                             },
-                            {'data': 'name', 'title': 'Имя'},
-                            {'data': 'email', 'title': 'Email'},
                             {
-                                'data': 'company_id',
-                                'searchable': false,
-                                'orderable': false,
+                                'data': 'company_name',
                                 'title': 'Компания',
-                                'className': 'dt-body-center',
                                 'render': function (company_id, type, full) {
-                                    return '<a href=' + '#company/'.concat(company_id) + '>' +
-                                        '<i class="fa fa-building-o" aria-hidden="true"></i></a>';
+                                    return '<a href=' + '#companies/'.concat(full.company_id) + '>' +
+                                        full.company_name + '</a>';
                                 }
                             },
+                            {
+                                'data': 'name',
+                                'title': 'Имя',
+                                'render': function (name, type, full) {
+                                    return '<a href=' + '#leads/'.concat(full.id) + '>' +
+                                        name + '</a>';
+                                }
+                            },
+                            {'data': 'email', 'title': 'Email'},
                             {
                                 'data': 'phones',
                                 'orderable': false,
@@ -202,6 +227,56 @@ function loadLeadList() {
             }
             else
                 $('#error_msg').text(ERR_MSG).show();
+        });
+}
+
+function loadLead(lead_id) {
+    function cleanUp() {
+        $('#subject').text('');
+        $('#text').text('');
+        $('#company_name').html('');
+        $('#lead_name').html('');
+        $('#lead_email').html('');
+    }
+    $.ajaxSetup({
+        headers : {
+            'Authorization': Cookies.get('jwt')
+        }
+    });
+    $.getJSON(API_DOMAIN.concat('lead/').concat(lead_id))
+        .done(function(response) {
+            if (response.status === 'success') {
+                cleanUp();
+                $('#subject').val(response.data.letter.subject);
+                $('#text').val(response.data.letter.text);
+                $('<a>', {
+                    href: '#companies/'.concat(response.data.company.id),
+                    html: '<i class="fa fa-building-o" aria-hidden="true"></i> ' + response.data.company.name
+                }).appendTo('#company_name');
+                $('#lead_name').text(response.data.lead.name || 'Имя не указано');
+                $('#lead_email').text(response.data.lead.email || 'Email не указан');
+            }
+            else {
+                cleanUp();
+                $('#error_msg').text(ERR_MSG).show();
+            }
+        })
+        .fail(function (jqxhr, textStatus, error) {
+            if (typeof jqxhr.responseJSON !== 'undefined') {
+                if (jqxhr.responseJSON.code == 401) {
+                    window.location.hash = '#';
+                } else {
+                    cleanUp();
+                    var error_txt = ERR_MSG +
+                        '<br>Code: ' + jqxhr.responseJSON.code +
+                        ' Message: ' + jqxhr.responseJSON.message;
+                    $('#error_msg').html(error_txt).show();
+                }
+            }
+            else {
+                cleanUp();
+                $('#error_msg').text(ERR_MSG).show();
+            }
         });
 }
 
@@ -259,7 +334,7 @@ function updateCompany() {
         industry: $('#new_industry').val()
     };
     var url = decodeURI(window.location.hash);
-    var id = url.split('#company/')[1].trim();
+    var id = url.split('#companies/')[1].trim();
     $.ajax({
         type: 'POST',
         url: API_DOMAIN.concat('company/').concat(id),
